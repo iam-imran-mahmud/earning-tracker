@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Driver Expenses</title>
+    <link rel="stylesheet" href="styles.css">
+    <script defer src="app.js"></script>
+  </head>
+  <body data-view="daily">
+    <main class="app">
+      <header class="topbar">
+        <div class="icon-tile">🚗</div>
+        <div>
+          <h1>Driver Expenses</h1>
+          <p id="screenTitle">Daily Data</p>
+        </div>
+        <div class="icon-tile muted">🔔</div>
+      </header>
+
+      <section class="year-strip" aria-label="Year selector">
+        <button id="prevYearBtn" class="icon-button" type="button" aria-label="Previous year">‹</button>
+        <strong id="activeYear">2026</strong>
+        <button id="nextYearBtn" class="icon-button" type="button" aria-label="Next year">›</button>
+      </section>
+
+      <section id="dailyView" class="screen active">
+        <section class="profit-card">
+          <p>Estimated Profit</p>
+          <strong id="dailyProfitHero">$0.00</strong>
+          <div class="profit-stats">
+            <div><span>Net earnings</span><b id="dailyNetHero">$0.00</b></div>
+            <div><span>Expenses</span><b id="dailyExpenseHero">-$0.00</b></div>
+            <div><span>Per km</span><b id="dailyPerKmHero">$0.00</b></div>
+          </div>
+        </section>
+
+        <form id="entryForm" class="form-card">
+          <div class="section-head">
+            <h2>Trip Details</h2>
+            <span>Daily</span>
+          </div>
+
+          <div class="field-grid">
+            <label>
+              <span>Date</span>
+              <input name="date" type="date" required>
+            </label>
+            <label>
+              <span>Total kilometres driven</span>
+              <input name="km" type="number" min="0" step="0.1" inputmode="decimal" required>
+              <em>km</em>
+            </label>
+            <label>
+              <span>Rides / blocks</span>
+              <input name="trips" type="number" min="0" step="1" inputmode="numeric">
+              <em>trips</em>
+            </label>
+            <label>
+              <span>Hours</span>
+              <input name="hours" type="number" min="0" step="0.1" inputmode="decimal">
+              <em>hrs</em>
+            </label>
+            <label>
+              <span>Uber fares</span>
+              <input name="uberFares" type="number" min="0" step="0.01" inputmode="decimal">
+              <em>$</em>
+            </label>
+            <label>
+              <span>Lyft fares</span>
+              <input name="lyftFares" type="number" min="0" step="0.01" inputmode="decimal">
+              <em>$</em>
+            </label>
+            <label>
+              <span>Amazon Flex fares</span>
+              <input name="amazonFares" type="number" min="0" step="0.01" inputmode="decimal">
+              <em>$</em>
+            </label>
+            <label>
+              <span>Fuel consumption</span>
+              <input name="mileage" type="number" min="0" step="0.1" inputmode="decimal" required>
+              <em>L/100km</em>
+            </label>
+            <label>
+              <span>Price per litre</span>
+              <input name="fuelRate" type="number" min="0" step="0.01" inputmode="decimal" required>
+              <em>$</em>
+            </label>
+            <label>
+              <span>Maintenance</span>
+              <input name="maintenance" type="number" min="0" step="0.01" inputmode="decimal">
+              <em>$</em>
+            </label>
+            <label>
+              <span>Other</span>
+              <input name="otherCost" type="number" min="0" step="0.01" inputmode="decimal">
+              <em>$</em>
+            </label>
+            <label class="wide">
+              <span>Other cost note</span>
+              <input name="description" type="text" maxlength="90" placeholder="parking, tolls, etc.">
+            </label>
+          </div>
+
+          <button class="primary-button" type="submit">Save Day</button>
+        </form>
+
+        <section class="results-card">
+          <div class="results-head">
+            <h2>Results Summary</h2>
+            <span id="logSummaryDate">Today</span>
+          </div>
+          <div class="result-line">
+            <span><i class="dot purple-dot"></i>Total Fares</span>
+            <strong id="summaryRevenue">$0.00</strong>
+          </div>
+          <div class="result-line">
+            <span><i class="dot green-dot"></i>Net Earnings</span>
+            <strong class="gain" id="summaryNet">$0.00</strong>
+          </div>
+          <div class="progress-row">
+            <span>Earnings kept</span>
+            <b id="summaryKept">0%</b>
+            <i><em id="keptBar"></em></i>
+          </div>
+          <div class="result-line">
+            <span><i class="dot purple-dot"></i>Fuel Cost</span>
+            <strong class="loss" id="summaryFuel">-$0.00</strong>
+          </div>
+          <div class="result-line">
+            <span><i class="dot orange-dot"></i>Maintenance</span>
+            <strong class="loss" id="summaryMaintenance">-$0.00</strong>
+          </div>
+          <div class="result-line">
+            <span><i class="dot grey-dot"></i>Other</span>
+            <strong class="loss" id="summaryOther">-$0.00</strong>
+          </div>
+          <div class="result-profit">
+            <span>🏆 Estimated Profit</span>
+            <strong id="summaryProfit">$0.00</strong>
+          </div>
+        </section>
+      </section>
+
+      <section id="costsView" class="screen">
+        <form id="costForm" class="form-card">
+          <div class="section-head">
+            <h2>Monthly Costs</h2>
+            <span>One page</span>
+          </div>
+          <div class="field-grid">
+            <label class="wide">
+              <span>Month</span>
+              <input name="month" type="month" required>
+            </label>
+            <label>
+              <span>Insurance</span>
+              <input name="insurance" type="number" min="0" step="0.01" inputmode="decimal">
+              <em>$</em>
+            </label>
+            <label>
+              <span>Maintenance</span>
+              <input name="maintenance" type="number" min="0" step="0.01" inputmode="decimal">
+              <em>$</em>
+            </label>
+            <label>
+              <span>Car payment</span>
+              <input name="carPayment" type="number" min="0" step="0.01" inputmode="decimal">
+              <em>$</em>
+            </label>
+            <label>
+              <span>Phone / data</span>
+              <input name="phone" type="number" min="0" step="0.01" inputmode="decimal">
+              <em>$</em>
+            </label>
+            <label>
+              <span>Other monthly</span>
+              <input name="other" type="number" min="0" step="0.01" inputmode="decimal">
+              <em>$</em>
+            </label>
+            <label class="wide">
+              <span>Note</span>
+              <input name="note" type="text" maxlength="90" placeholder="registration, supplies, etc.">
+            </label>
+          </div>
+          <button class="primary-button" type="submit">Save Monthly Costs</button>
+        </form>
+        <div id="costsList" class="entry-stack"></div>
+      </section>
+
+      <section id="weeklyView" class="screen">
+        <section class="report-intro">
+          <h2>Weekly Data</h2>
+          <p>Weeks start Monday and end Sunday.</p>
+        </section>
+        <div id="weeklyList" class="entry-stack"></div>
+      </section>
+
+      <section id="monthlyView" class="screen">
+        <section class="report-intro">
+          <h2>Whole Monthly Data</h2>
+          <p>All months for the selected year, including saved monthly costs.</p>
+        </section>
+        <div id="monthlyList" class="entry-stack"></div>
+      </section>
+
+      <section id="savedView" class="screen">
+        <section class="backup-card">
+          <p>Saved days stay in this browser. Export a backup when you update a lot of data.</p>
+          <button id="exportJsonBtn" class="secondary-button" type="button">Export backup</button>
+          <button id="exportCsvBtn" class="secondary-button" type="button">Export CSV</button>
+          <label class="import-label">
+            <span>Import backup JSON</span>
+            <input id="importJsonInput" type="file" accept="application/json,.json">
+          </label>
+        </section>
+        <div id="savedList" class="entry-stack"></div>
+      </section>
+    </main>
+
+    <nav class="bottom-nav" aria-label="Main navigation">
+      <button class="nav-item active" type="button" data-view="daily"><span>＋</span>Daily</button>
+      <button class="nav-item" type="button" data-view="costs"><span>$</span>Costs</button>
+      <button class="nav-item" type="button" data-view="weekly"><span>W</span>Weekly</button>
+      <button class="nav-item" type="button" data-view="monthly"><span>M</span>Monthly</button>
+      <button class="nav-item" type="button" data-view="saved"><span>✓</span>Saved</button>
+    </nav>
+  </body>
+</html>
